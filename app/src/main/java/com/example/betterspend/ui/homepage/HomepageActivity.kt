@@ -46,7 +46,6 @@ import coil.compose.AsyncImage
 import androidx.compose.runtime.Composable
 import com.example.betterspend.data.authentication.SharedPrefManager
 import com.example.betterspend.data.model.Product
-import com.example.betterspend.data.repository.BarcodeRepository
 import com.example.betterspend.ui.authentication.LoginActivity
 import com.example.betterspend.ui.scanner.ScannerActivity
 import com.example.betterspend.viewmodel.BarcodeViewmodel
