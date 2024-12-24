@@ -83,7 +83,6 @@ class HomepageActivity : AppCompatActivity() {
                 GroceryActivityScreen(
                     onBarcodeFound = { product ->
                         lifecycleScope.launch {
-                            Log.d("MIAO", "$product")
                             viewmodel.addProduct(userId, product)
                         }
                     },
