@@ -29,6 +29,9 @@
             android:name=".ui.authentication.RegisterActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.homepage.StatisticsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.authentication.LoginActivity"
             android:exported="true"
             android:label="@string/app_name">

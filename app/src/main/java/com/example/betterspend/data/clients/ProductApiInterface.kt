@@ -1,6 +1,7 @@
 package com.example.betterspend.data.clients
 
 import com.example.betterspend.data.model.AddProductRequest
+import com.example.betterspend.data.model.CategoriesDataFrame
 import com.example.betterspend.data.model.GenericResponse
 import com.example.betterspend.data.model.UserProducts
 import retrofit2.http.Body
@@ -14,4 +15,7 @@ interface ProductApiInterface {
 
     @GET("/product")
     suspend fun getProducts(@Query("user") user : String) : UserProducts
+
+    @GET("/statistics")
+    suspend fun getCategories(@Query("user") user : String) : CategoriesDataFrame
 }

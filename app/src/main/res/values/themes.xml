@@ -10,19 +10,10 @@
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">@color/purple_200</item>
 
         <!-- Background color -->
         <item name="android:windowBackground">@color/beige</item>
 
-        <item name="materialButtonStyle">@style/CustomButtonStyle</item>
-    </style>
-
-    <!-- Custom button style -->
-    <style name="CustomButtonStyle" parent="Widget.Material3.Button">
-        <item name="backgroundTint">@color/light_blue</item>
-        <item name="rippleColor">@color/teal_700</item>
-        <item name="strokeColor">@color/light_blue</item>
-        <item name="android:textColor">@color/white</item>
     </style>
 </resources>

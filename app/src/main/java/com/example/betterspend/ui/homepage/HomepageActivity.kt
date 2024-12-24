@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -47,6 +46,7 @@ import androidx.compose.runtime.Composable
 import com.example.betterspend.data.authentication.SharedPrefManager
 import com.example.betterspend.data.model.Product
 import com.example.betterspend.ui.authentication.LoginActivity
+import com.example.betterspend.ui.authentication.RegisterActivity
 import com.example.betterspend.ui.scanner.ScannerActivity
 import com.example.betterspend.viewmodel.BarcodeViewmodel
 import com.example.betterspend.viewmodel.ProductViewmodel
@@ -215,26 +215,6 @@ fun GroceryTopBar(onExit : () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            // Home Icon
-            IconButton(onClick = { /* Handle Home Click */ }) {
-                Icon(
-                    imageVector = Icons.Default.Home,
-                    contentDescription = "Home",
-                    tint = Color.Black
-                )
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-            // Stats Icon
-            IconButton(onClick = { /* Handle Stats Click */ }) {
-                Icon(
-                    imageVector = Icons.Default.Addchart,
-                    contentDescription = "Stats",
-                    tint = Color.Black
-                )
-            }
-        }
-
         // Exit Button
         TextButton(
             onClick = { onExit() }
