@@ -1,9 +1,11 @@
 package com.example.betterspend.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.betterspend.data.model.Product
 import com.example.betterspend.data.model.UserProducts
+import com.example.betterspend.data.repository.BarcodeRepository
 import com.example.betterspend.data.repository.ProductRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +23,9 @@ data class HomepageUiState(
 
 class ProductViewmodel() : ViewModel() {
 
-    private val repository : ProductRepository = ProductRepository()
+    private val productRepo : ProductRepository = ProductRepository()
+    private val barcodeRepo : BarcodeRepository = BarcodeRepository()
+
     private val _uiState = MutableStateFlow(HomepageUiState())
     val uiState : StateFlow<HomepageUiState> = _uiState.asStateFlow()
 
@@ -32,9 +36,9 @@ class ProductViewmodel() : ViewModel() {
         addJob?.cancel()
         addJob = viewModelScope.launch {
             try {
-                repository.addProduct(user, product)
+                productRepo.addProduct(user, product)
                 _uiState.update {
-                    it.copy(productItems = repository.getProducts(user))
+                    it.copy(productItems = productRepo.getProducts(user))
                 }
             } catch (e: Exception) {
                 _uiState.update {
@@ -48,11 +52,38 @@ class ProductViewmodel() : ViewModel() {
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch {
             try {
-                val productItems = repository.getProducts(user)
+                val productItems = productRepo.getProducts(user)
                 _uiState.update {
                     it.copy(productItems = productItems)
                 }
             } catch (ioe : IOException) {
+                // Handle the error and notify the UI when appropriate.
+                _uiState.update {
+                    it.copy(errorMessage = "An exception error occurred")
+                }
+            }
+        }
+    }
+
+    fun fetchProductByBarcode(user: String, barcode : String) {
+        fetchJob?.cancel()
+
+        fetchJob = viewModelScope.launch {
+            try {
+                val response = barcodeRepo.scan(barcode)
+
+                if (response.success) {
+                    addProduct(user, response.product)
+                    _uiState.update {
+                        it.copy(productItems = productRepo.getProducts(user), errorMessage = response.message)
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(errorMessage = response.message)
+                    }
+                }
+
+            } catch (e: Exception) {
                 // Handle the error and notify the UI when appropriate.
                 _uiState.update {
                     it.copy(errorMessage = "An exception error occurred")

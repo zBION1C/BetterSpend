@@ -41,7 +41,11 @@ android {
 }
 
 dependencies {
-    implementation("androidx.fragment:fragment-ktx:1.5.7") // Or latest version
+    implementation("androidx.fragment:fragment-ktx:1.5.7")
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx) // Or latest version
     val camerax_version = "1.3.0-alpha06" // or latest version
     implementation("androidx.camera:camera-lifecycle:${camerax_version}")
     implementation("androidx.camera:camera-view:${camerax_version}")
@@ -52,7 +56,9 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")         // Retrofit
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")  // JSON converter
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0") // Optional: Logging
-
+    dependencies {
+        implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    }
 
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

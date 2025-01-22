@@ -1,11 +1,18 @@
-package com.example.betterspend.data.authentication
+package com.example.betterspend.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.Uri
 
-class SharedPrefManager(context: Context) {
-    private val sharedPreferences: SharedPreferences =
-        context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+object SharedPrefManager {
+
+    private const val PREFS_NAME = "user_prefs"
+    private lateinit var sharedPreferences: SharedPreferences
+
+
+    fun initialize(context: Context) {
+        sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    }
 
     // Save login state
     fun saveLoginState(userId: String) {
@@ -30,5 +37,16 @@ class SharedPrefManager(context: Context) {
         val editor = sharedPreferences.edit()
         editor.clear()
         editor.apply()
+    }
+
+    fun saveProfilePictureUri(uri: Uri?) {
+        val editor = sharedPreferences.edit()
+        editor.putString("profile_picture_uri", uri.toString())
+        editor.apply()
+    }
+
+    fun getProfilePictureUri(): Uri? {
+        val uriString = sharedPreferences.getString("profile_picture_uri", null)
+        return uriString?.let { Uri.parse(it) }
     }
 }
