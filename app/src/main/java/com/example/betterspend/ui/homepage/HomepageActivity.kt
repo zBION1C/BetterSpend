@@ -39,16 +39,6 @@ fun HomepageScreen(
     productVM: ProductViewmodel,
 ) {
     ItemList(modifier, productVM)
-
-//    Text(
-//        text = "${SharedPrefManager.getUserId()}",
-//        modifier = modifier
-//    )
-//    Image(
-//        painter = rememberAsyncImagePainter(SharedPrefManager.getProfilePictureUri()), // Updated to use rememberAsyncImagePainter
-//        contentDescription = "Profile Image",
-//        modifier = Modifier.size(150.dp)
-//    )
 }
 
 @Preview(showBackground = true)

@@ -15,10 +15,11 @@ object SharedPrefManager {
     }
 
     // Save login state
-    fun saveLoginState(userId: String) {
+    fun saveLoginState(userId: String, userEmail: String) {
         val editor = sharedPreferences.edit()
         editor.putBoolean("is_logged_in", true)
         editor.putString("user_id", userId)
+        editor.putString("user_email", userEmail)
         editor.apply()
     }
 
@@ -32,6 +33,11 @@ object SharedPrefManager {
         return sharedPreferences.getString("user_id", null)
     }
 
+    // Get user email
+    fun getUserEmail(): String? {
+        return sharedPreferences.getString("user_email", null)
+    }
+
     // Clear login state
     fun clearLoginState() {
         val editor = sharedPreferences.edit()
@@ -39,9 +45,9 @@ object SharedPrefManager {
         editor.apply()
     }
 
-    fun saveProfilePictureUri(uri: Uri?) {
+    fun saveProfilePictureUri(uri: String?) {
         val editor = sharedPreferences.edit()
-        editor.putString("profile_picture_uri", uri.toString())
+        editor.putString("profile_picture_uri", uri)
         editor.apply()
     }
 

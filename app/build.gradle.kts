@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.betterspend"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -60,6 +60,10 @@ dependencies {
         implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     }
 
+    // opencv
+    implementation("com.quickbirdstudios:opencv:4.5.3.0")
+
+
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
@@ -90,6 +94,9 @@ dependencies {
 
     // Jetpack Compose integration
     implementation("androidx.navigation:navigation-compose:$nav_version")
+
+    // Charts integration
+    implementation("co.yml:ycharts:2.1.0")
 
     // Views/Fragments integration
     implementation("androidx.navigation:navigation-fragment:$nav_version")

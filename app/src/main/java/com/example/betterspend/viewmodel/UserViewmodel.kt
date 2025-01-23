@@ -38,12 +38,13 @@ class UserViewmodel() : ViewModel() {
             _loginState.value = LoginState.Loading
             try {
                 val response = repository.login(email, password)
+
                 if (response.success) {
                     // Save user ID for future uses in the app and for "already logged in" feature
-                    SharedPrefManager.saveLoginState(response.id.toString())
+                    SharedPrefManager.saveLoginState(response.id.toString(), response.email)
 
                     // Save profile picture URI for future uses in the app
-                    SharedPrefManager.saveProfilePictureUri(response.image)
+                     SharedPrefManager.saveProfilePictureUri(response.image)
 
                     // Update the state with the success response
                     _loginState.value = LoginState.Success(response)
@@ -63,7 +64,6 @@ class UserViewmodel() : ViewModel() {
             try {
                 val response = repository.register(email, password, confirmPassword, imageUri)
                 if (response.success) {
-                    SharedPrefManager.saveProfilePictureUri(imageUri)
                     _registerState.value = RegisterState.Success(response)
                 } else {
                     _registerState.value = RegisterState.Error(response.message)

@@ -2,6 +2,7 @@ package com.example.betterspend.ui.authentication.login
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.example.betterspend.ui.homepage.HomepageActivity
 import com.example.betterspend.utils.SharedPrefManager
 import com.example.betterspend.viewmodel.UserViewmodel
+import org.opencv.android.OpenCVLoader
 import kotlin.getValue
 
 class LoginActivity : ComponentActivity() {
@@ -26,6 +28,13 @@ class LoginActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+        if (!OpenCVLoader.initDebug())
+            Log.e("OpenCV", "Unable to load OpenCV!");
+        else
+            Log.d("OpenCV", "OpenCV loaded Successfully!");
+
 
         // Initialize SharedPrefManager to hold global data like the logged user id and profile picture
         SharedPrefManager.initialize(applicationContext)

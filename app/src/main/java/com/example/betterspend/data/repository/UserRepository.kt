@@ -11,7 +11,7 @@ class UserRepository() {
     suspend fun login(email : String, password : String) : LoginResponse {
         var response : LoginResponse
         if (email == "" || password == "") {
-            response = LoginResponse(false, "All fields have to be filled", -1, "", Uri.EMPTY)
+            response = LoginResponse(false, "All fields have to be filled", -1, "", "")
             return response
         }
         val request = LoginRequest(email, password)

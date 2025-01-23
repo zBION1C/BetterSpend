@@ -1,18 +1,16 @@
 package com.example.betterspend.ui.authentication.registration
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,12 +27,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.example.betterspend.ui.authentication.login.LoginActivity
 import com.example.betterspend.ui.common.EmailTextField
 import com.example.betterspend.ui.common.PasswordTextField
-import com.example.betterspend.utils.SharedPrefManager
+import com.example.betterspend.utils.processImageRedChannel
+import com.example.betterspend.utils.saveImageToInternalStorage
 import com.example.betterspend.viewmodel.RegisterState
 import com.example.betterspend.viewmodel.UserViewmodel
 
@@ -48,7 +45,6 @@ fun RegisterBody(userVM: UserViewmodel, modifier: Modifier) {
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
-    //TODO: Save uri in SharedPrefManager
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
     Column (
@@ -76,7 +72,8 @@ fun RegisterBody(userVM: UserViewmodel, modifier: Modifier) {
             userVM = userVM
         )
         ImagePicker(
-            onImageSelected = { uri -> imageUri = uri }
+            context = LocalContext.current,
+            onImageSaved = { uri ->  imageUri = processImageRedChannel(context, uri) }
         )
 
         when (registerState) {
@@ -100,9 +97,15 @@ fun RegisterBody(userVM: UserViewmodel, modifier: Modifier) {
 }
 
 @Composable
-fun ImagePicker(onImageSelected: (Uri) -> Unit) {
+fun ImagePicker(context: Context, onImageSaved: (Uri) -> Unit) {
+    //TODO: Do not save two images, just open one and save the processed one
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let { onImageSelected(it) }
+        uri?.let {
+            val savedUri = saveImageToInternalStorage(context, it)
+            if (savedUri != null) {
+                onImageSaved(savedUri)
+            }
+        }
     }
 
     Button(
