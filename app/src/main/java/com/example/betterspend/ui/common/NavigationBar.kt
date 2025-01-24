@@ -123,9 +123,3 @@ fun NavigationBar(productVM: ProductViewmodel) {
         }
     }
 }
-
-@Preview
-@Composable
-fun NavigationBarPreview() {
-    NavigationBar(ProductViewmodel())
-}

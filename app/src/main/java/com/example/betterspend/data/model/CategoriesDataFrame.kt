@@ -1,6 +1,11 @@
 package com.example.betterspend.data.model
 
+data class Category(
+    val name: String,
+    val frequency: Int
+)
+
 data class CategoriesDataFrame (
-    val categories : List<String>,
-    val numbers : List<Int>
+    val success: Boolean,
+    val categories: List<Category>
 )
