@@ -30,8 +30,6 @@ fun ItemList(
     // Fetch logged user products
     productVM.fetchProducts(SharedPrefManager.getUserId().toString())
 
-    Log.d("MIAO", uiState.value.productItems.products.toString())
-
     if (uiState.value.productItems.products.isNotEmpty()) {
         // LazyColumn to display products
         LazyColumn(
@@ -60,9 +58,7 @@ fun ItemList(
         }
     }
 
-
-    Log.d("MIAO", uiState.value.barcodeScanMessage)
-
+    
     if (uiState.value.barcodeScanMessage.isNotEmpty()) {
         Toast.makeText(context, uiState.value.barcodeScanMessage, Toast.LENGTH_SHORT).show()
         uiState.value.barcodeScanMessage = ""

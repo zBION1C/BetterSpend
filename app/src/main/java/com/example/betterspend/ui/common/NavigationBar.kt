@@ -1,5 +1,6 @@
 package com.example.betterspend.ui.common
 
+import android.app.Activity
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.material.icons.Icons
@@ -79,6 +80,9 @@ fun NavigationBar(
                             SharedPrefManager.clearLoginState()
                             val intent = Intent(context, LoginActivity::class.java)
                             context.startActivity(intent)
+                            if (context is Activity) {
+                                context.finish()
+                            }
                         }
                         else -> {
                             if (currentRoute != item) {
