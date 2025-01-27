@@ -28,7 +28,7 @@ import co.yml.charts.common.model.PlotType
 import co.yml.charts.ui.piechart.charts.PieChart
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
-import com.example.betterspend.viewmodel.StatisticsViewmodel
+import com.example.betterspend.viewmodel.ProductViewmodel
 import kotlin.random.Random
 
 fun getRandomColor(): Long {
@@ -39,11 +39,10 @@ fun getRandomColor(): Long {
 }
 
 @Composable
-fun StatisticsBody(modifier: Modifier, statisticsVM: StatisticsViewmodel) {
-    val chartState = statisticsVM.uiState.collectAsState()
+fun StatisticsBody(modifier: Modifier, productVM: ProductViewmodel) {
+    val chartState = productVM.uiState.collectAsState()
     val categories = chartState.value.statistics.categories
 
-    Log.d("MIAO", "$categories")
     val context = LocalContext.current
 
     if (categories.isNotEmpty()) {

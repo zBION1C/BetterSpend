@@ -21,14 +21,7 @@ class ProductRepository {
     }
 
     suspend fun getCategories(user : String) : CategoriesDataFrame {
-        Log.d("MIAO", "Repo: start")
-        return try {
-            val response = RetrofitClient.productApi.getCategories(user)
-            Log.d("MIAO", "Repo: $response")
-            response
-        } catch (e: Exception) {
-            Log.e("MIAO", "Error in getCategories: ${e.message}", e)
-            throw e // Optionally rethrow or handle the exception
-        }
+        val response = RetrofitClient.productApi.getCategories(user)
+        return response
     }
 }

@@ -1,15 +1,7 @@
 package com.example.betterspend.ui.common
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.util.Log
-import android.widget.Toast
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Logout
@@ -24,101 +16,81 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.betterspend.ui.authentication.login.LoginActivity
-import com.example.betterspend.ui.homepage.HomepageActivity
+import com.example.betterspend.ui.homepage.HomepageScreen
 import com.example.betterspend.ui.scanner.ScannerActivity
-import com.example.betterspend.ui.statistics.StatisticsActivity
+import com.example.betterspend.ui.statistics.StatisticsScreen
 import com.example.betterspend.utils.SharedPrefManager
 import com.example.betterspend.viewmodel.ProductViewmodel
 
-fun navigateTo(
-    context: Context,
-    destination: String,
-    scanLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>
-) {
-    val currentActivity = (context as? Activity)?.javaClass?.simpleName
-
-    lateinit var intent: Intent
-
-    val activityMap = mapOf(
-        "Homepage" to HomepageActivity::class.java ,
-        "Statistics" to StatisticsActivity::class.java,
-        "Scan" to ScannerActivity::class.java,
-        "Logout" to LoginActivity::class.java
-    )
-
-    // Get the corresponding activity class for the destination
-    val activityClass = activityMap[destination] ?: return
-
-    // Check if the current activity is already running
-    if (activityClass.simpleName == currentActivity) {
-        return
+@Composable
+fun AppNavigation(navController: NavHostController, modifier: Modifier, productVM: ProductViewmodel) {
+    NavHost(navController = navController, startDestination = "homepage") {
+        composable("homepage") { HomepageScreen(
+            productVM = productVM,
+            modifier = modifier
+        ) }
+        composable("statistics") { StatisticsScreen(
+            padding = modifier,
+            productVM = productVM
+        ) }
     }
-
-
-    // Start the new activity
-    intent = Intent(context, activityClass)
-
-    if (destination == "Scan") {
-        scanLauncher.launch(intent)
-    } else {
-        context.startActivity(intent)
-    }
-
-    if (destination == "Logout") {
-        // Clear the saved login state
-        SharedPrefManager.clearLoginState()
-        if (context is Activity) {
-            context.finish()
-        }
-    }
-
 }
 
 @Composable
-fun NavigationBar(productVM: ProductViewmodel) {
-    // Todo: FIX THE SELECTED LOGIC FOR ICONS
-    var selectedItem by remember { mutableIntStateOf(0) }
-    val items = listOf("Homepage", "Statistics", "Scan", "Logout")
+fun NavigationBar(
+    navController: NavController,
+    scanLauncher: ActivityResultLauncher<Intent>,
+) {
+    val items = listOf("homepage", "statistics", "scanner", "logout")
     val selectedIcons = listOf(Icons.Filled.Home, Icons.Filled.PieChart, Icons.Filled.QrCodeScanner, Icons.Filled.Logout)
     val unselectedIcons = listOf(Icons.Outlined.Home, Icons.Outlined.PieChart, Icons.Outlined.QrCodeScanner, Icons.Outlined.Logout)
 
-    // Get the current context for navigation purposes
+    val currentRoute = navController.currentBackStackEntryAsState()?.value?.destination?.route
     val context = LocalContext.current
-
-    // Define the ActivityResultLauncher for ScannerActivity
-    val scanLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val scannedBarcode = result.data?.getStringExtra("SCANNED_BARCODE")
-            if (!scannedBarcode.isNullOrEmpty()) {
-                Log.d("MIAO", "Scanned Barcode: $scannedBarcode")
-                Toast.makeText(context, "Barcode: $scannedBarcode", Toast.LENGTH_LONG).show()
-
-                // Handle the scanned barcode (e.g., update ViewModel, navigate, etc.)
-                productVM.fetchProductByBarcode(SharedPrefManager.getUserId().toString(), scannedBarcode.toString())
-            }
-        }
-    }
 
     NavigationBar {
         items.forEachIndexed { index, item ->
-            NavigationBarItem (
+            NavigationBarItem(
                 icon = {
                     Icon(
-                        if (selectedItem == index) selectedIcons[index] else unselectedIcons[index],
+                        if (currentRoute == item) selectedIcons[index] else unselectedIcons[index],
                         contentDescription = item
                     )
                 },
-                label = { Text(item) },
-                selected = selectedItem == index,
+                label = { Text(item.replaceFirstChar { it.uppercase() }) },
+                selected = currentRoute == item,
                 onClick = {
-                    selectedItem = index
-                    navigateTo(context, item, scanLauncher) }
+                    when (item) {
+                        "scanner" -> {
+                            // Launch the scanner activity
+                            val intent = Intent(context, ScannerActivity::class.java)
+                            scanLauncher.launch(intent)
+                        }
+                        "logout" -> {
+                            // Handle logout logic here
+                            SharedPrefManager.clearLoginState()
+                            val intent = Intent(context, LoginActivity::class.java)
+                            context.startActivity(intent)
+                        }
+                        else -> {
+                            if (currentRoute != item) {
+                                navController.navigate(item) {
+                                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
+                        }
+                    }
+                }
             )
         }
     }

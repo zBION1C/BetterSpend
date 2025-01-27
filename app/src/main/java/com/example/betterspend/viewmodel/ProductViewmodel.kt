@@ -2,6 +2,7 @@ package com.example.betterspend.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.betterspend.data.model.CategoriesDataFrame
 import com.example.betterspend.data.model.Product
 import com.example.betterspend.data.model.UserProducts
 import com.example.betterspend.data.repository.BarcodeRepository
@@ -17,6 +18,8 @@ import java.io.IOException
 
 data class HomepageUiState(
     val productItems : UserProducts = UserProducts(listOf()),
+    val statistics: CategoriesDataFrame = CategoriesDataFrame(false, listOf()),
+    var barcodeScanMessage: String = "",
     val errorMessage : String = ""
 )
 
@@ -74,11 +77,36 @@ class ProductViewmodel() : ViewModel() {
                 if (response.success) {
                     addProduct(user, response.product)
                     _uiState.update {
-                        it.copy(productItems = productRepo.getProducts(user), errorMessage = response.message)
+                        it.copy(productItems = productRepo.getProducts(user))
                     }
                 } else {
                     _uiState.update {
-                        it.copy(errorMessage = response.message)
+                        it.copy(barcodeScanMessage = response.message)
+                    }
+                }
+
+            } catch (e: Exception) {
+                // Handle the error and notify the UI when appropriate.
+                _uiState.update {
+                    it.copy(errorMessage = "An exception error occurred")
+                }
+            }
+        }
+    }
+
+    fun fetchStatistics(user: String) {
+        fetchJob?.cancel()
+        fetchJob = viewModelScope.launch {
+            try {
+                val response = productRepo.getCategories(user)
+
+                if (response.success) {
+                    _uiState.update {
+                        it.copy(statistics = response)
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(errorMessage = response.success.toString())
                     }
                 }
 

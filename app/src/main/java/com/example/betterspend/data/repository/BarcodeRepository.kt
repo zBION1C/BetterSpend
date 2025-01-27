@@ -8,9 +8,7 @@ import com.example.betterspend.data.model.ScanResponse
 class BarcodeRepository {
     suspend fun scan(upc : String) : ScanResponse {
 
-        Log.d("MIAO", "Before")
         var fullProduct = RetrofitClient.barcodeApi.scan(upc)
-        Log.d("MIAO", "${fullProduct}")
 
         var response : ScanResponse
 

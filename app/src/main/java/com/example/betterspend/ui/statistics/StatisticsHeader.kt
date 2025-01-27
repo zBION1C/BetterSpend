@@ -25,9 +25,6 @@ import com.example.betterspend.utils.SharedPrefManager
 
 @Composable
 fun StatisticsHeader(modifier: Modifier) {
-
-    Log.d("MIAO", "Profile Picture URI: ${SharedPrefManager.getProfilePictureUri()}")
-
     // Use a Row to arrange the image and text horizontally
     Row(
         modifier = modifier
