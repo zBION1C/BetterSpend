@@ -58,7 +58,7 @@ fun ItemList(
         }
     }
 
-    
+
     if (uiState.value.barcodeScanMessage.isNotEmpty()) {
         Toast.makeText(context, uiState.value.barcodeScanMessage, Toast.LENGTH_SHORT).show()
         uiState.value.barcodeScanMessage = ""
